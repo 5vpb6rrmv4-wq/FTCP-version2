@@ -23,18 +23,42 @@ const activeMenu = computed(() => {
 })
 
 const menuItems = computed(() => {
-  const role = route.path.split('/')[1]
-  const base = `/${role}`
+  const role = route.path.split('/')[1] || 'student'
+  const base = '/' + role
   const items: { path: string; title: string; icon: string }[] = []
+  const push = (p: string, t: string, i: string) => items.push({ path: base + p, title: t, icon: i })
+
   if (role === 'student') {
-    items.push({ path: `${base}/home`, title: '个人学业中心', icon: 'HomeFilled' })
-    items.push({ path: `${base}/cultivation`, title: '2.1 培养', icon: 'Reading' })
-    items.push({ path: `${base}/mentorship`, title: '2.2 导学', icon: 'Connection' })
-    items.push({ path: `${base}/degree`, title: '2.3 学位', icon: 'Trophy' })
-    items.push({ path: `${base}/research-work`, title: '2.4 研工管理', icon: 'Stamp' })
-    items.push({ path: `${base}/others`, title: '2.5 其他', icon: 'Setting' })
+    push('/home', '个人学业中心', 'HomeFilled')
+    push('/cultivation', '2.1 培养', 'Reading')
+    push('/mentorship', '2.2 导学', 'Connection')
+    push('/degree', '2.3 学位', 'Trophy')
+    push('/research-work', '2.4 研工管理', 'Stamp')
+    push('/others', '2.5 其他', 'Setting')
+  } else if (role === 'teacher') {
+    push('/home', '教师驾驶舱', 'HomeFilled')
+    push('/home', '教学', 'Reading')
+    push('/home', '导学', 'Connection')
+    push('/home', '导师', 'User')
+    push('/home', '科研', 'DataAnalysis')
+    push('/home', '项目', 'Folder')
+  } else if (role === 'admin') {
+    push('/home', '管理者驾驶舱', 'HomeFilled')
+    push('/home', '招生', 'List')
+    push('/home', '学生', 'User')
+    push('/home', '研工', 'Stamp')
+    push('/home', '培养', 'Reading')
+    push('/home', '学位', 'Trophy')
+    push('/home', '导师', 'Avatar')
+    push('/home', '系统', 'Setting')
+  } else if (role === 'leader') {
+    push('/home', '全局业务大看板', 'HomeFilled')
+    push('/home', '招生', 'List')
+    push('/home', '培养', 'Reading')
+    push('/home', '学位', 'Trophy')
+    push('/home', '数据统计', 'DataAnalysis')
   } else {
-    items.push({ path: `${base}/home`, title: '首页', icon: 'HomeFilled' })
+    push('/home', '首页', 'HomeFilled')
   }
   return items
 })
