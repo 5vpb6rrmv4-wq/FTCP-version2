@@ -24,21 +24,28 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { Fold, ArrowDown } from '@element-plus/icons-vue'
 
-defineProps<{ role: string }>()
 defineEmits(['toggle'])
 const route = useRoute()
 
 const roleLabel = computed(() => {
   const r = route.path.split('/')[1]
-  return { student: '学生端', teacher: '教师端', admin: '管理员端', leader: '领导端' }[r] || '未知'
+  const map: Record<string,string> = { student: '学生端', teacher: '教师端', admin: '管理员端', leader: '领导端' }
+  return map[r] || '未知'
 })
 
 const quickMenus = computed(() => {
-  const base = `/${route.path.split('/')[1]}`
-  const menus: { path: string; title: string }[] = [{ path: `${base}/home`, title: '首页' }]
-  const role = route.path.split('/')[1]
+  const role = route.path.split('/')[1] || 'student'
+  const base = '/' + role
+  const push = (p: string, t: string) => ({ path: base + p, title: t })
+  const menus: { path: string; title: string }[] = [push('/home', '首页')]
   if (role === 'student') {
-    menus.push({ path: `${base}/cultivation`, title: '培养' }, { path: `${base}/mentorship`, title: '导学' }, { path: `${base}/degree`, title: '学位' }, { path: `${base}/research-work`, title: '研工管理' }, { path: `${base}/others`, title: '其他' })
+    menus.push(push('/cultivation', '培养'), push('/mentorship', '导学'), push('/degree', '学位'), push('/research-work', '研工'), push('/others', '其他'))
+  } else if (role === 'teacher') {
+    menus.push(push('/home', '教学'), push('/home', '导学'), push('/home', '导师'), push('/home', '科研'))
+  } else if (role === 'admin') {
+    menus.push(push('/home', '招生'), push('/home', '学生'), push('/home', '培养'), push('/home', '学位'), push('/home', '系统'))
+  } else if (role === 'leader') {
+    menus.push(push('/home', '招生'), push('/home', '培养'), push('/home', '学位'), push('/home', '数据'))
   }
   return menus
 })
@@ -51,8 +58,7 @@ function isActive(path: string) { return route.path.startsWith(path) }
 .tn-left{display:flex;align-items:center;gap:12px;overflow:hidden;flex:1}
 .quick-nav{display:flex;gap:2px}
 .qn-btn{padding:6px 16px;border:none;background:transparent;color:#1e293b;font-size:13px;cursor:pointer;border-radius:8px;font-family:inherit}
-.qn-btn:hover{background:#f1f5f9}
-.qn-btn.active{background:#eff6ff;color:#153D97;font-weight:600}
+.qn-btn:hover{background:#f1f5f9}.qn-btn.active{background:#eff6ff;color:#153D97;font-weight:600}
 .user-chip{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:12px;cursor:pointer}
 .user-chip:hover{background:#f8fafc}
 .uname{font-size:13px;font-weight:600;color:#1e293b}
